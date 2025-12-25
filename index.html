@@ -41,10 +41,10 @@ button:disabled{
   border-radius:15px;
   display:none;
 }
-.date{
-  margin-top:10px;
+.info{
   font-size:13px;
   color:#444;
+  margin-top:10px;
 }
 .note{
   font-size:12px;
@@ -60,7 +60,7 @@ button:disabled{
   <h2>🎁 CLAIM YOUR GIFT 🎁</h2>
   <p>Ambil <b>1 foto hari ini</b> dengan senyum 😊</p>
 
-  <div class="date" id="today"></div>
+  <div class="info" id="today"></div>
 
   <input 
     type="file" 
@@ -73,18 +73,18 @@ button:disabled{
   <img id="preview">
 
   <button id="waBtn" disabled onclick="sendWA()">
-    📲 KIRIM FOTO KE WHATSAPP
+    📲 KIRIM KE WHATSAPP
   </button>
 
   <div class="note">
-    *Tanggal & jam otomatis tercatat
+    *Foto & catatan akan terkirim
   </div>
 </div>
 
 <script>
 let selectedFile = null;
 
-// tampilkan tanggal hari ini
+// ===== TANGGAL & JAM HARI INI =====
 const now = new Date();
 const hari = now.toLocaleDateString("id-ID", {
   weekday: "long",
@@ -100,6 +100,7 @@ const jam = now.toLocaleTimeString("id-ID", {
 document.getElementById("today").innerHTML =
   `📅 ${hari}<br>🕒 ${jam} WIB`;
 
+// ===== PREVIEW FOTO =====
 function previewPhoto(){
   const input = document.getElementById("photoInput");
   const img = document.getElementById("preview");
@@ -113,8 +114,9 @@ function previewPhoto(){
   }
 }
 
+// ===== KIRIM KE WHATSAPP =====
 async function sendWA(){
-  const phone = "6285606186250"; // GANTI NOMOR WA
+  const phone = "6285606186250"; // GANTI NOMOR WA TUJUAN
 
   const text =
 `Aku sudah claim gift 🎁
@@ -122,20 +124,22 @@ async function sendWA(){
 🕒 Jam: ${jam} WIB
 😊 Ini fotoku hari ini dengan senyum`;
 
+  // 1️⃣ KIRIM FOTO
   if(navigator.share){
     try{
       await navigator.share({
         title: "Claim Gift",
-        text: text,
         files: [selectedFile]
       });
     }catch(e){
-      alert("Pengiriman dibatalkan");
+      alert("Pengiriman foto dibatalkan");
+      return;
     }
-  }else{
-    const msg = encodeURIComponent(text);
-    window.open(`https://wa.me/${phone}?text=${msg}`);
   }
+
+  // 2️⃣ KIRIM CATATAN
+  const msg = encodeURIComponent(text);
+  window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
 }
 </script>
 
